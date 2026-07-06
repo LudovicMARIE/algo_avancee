@@ -11,11 +11,22 @@ On utilise l'algorithme de Dijkstra, qui est concu exactement pour ca.
 import csv
 import heapq
 from collections import defaultdict
+from io import StringIO
+
+LIAISONS_CSV = """\
+depart,destination,score_risque
+Bar Central,Rue Victor Hugo,20
+Rue Victor Hugo,Place République,30
+Bar Central,Rue des Lilas,50
+Rue des Lilas,Place République,10
+Place République,Domicile,15
+Rue Victor Hugo,Domicile,40
+"""
 
 
-def charger_graphe(chemin_csv, oriente=True):
+def charger_graphe(donnees_csv, oriente=True):
     """
-    Lit le fichier CSV et construit le graphe.
+    Lit les donnees CSV (chaine de caracteres) et construit le graphe.
 
     Le graphe est un dictionnaire : pour chaque lieu de depart, on garde
     la liste des (destination, score_risque) accessibles.
@@ -26,16 +37,15 @@ def charger_graphe(chemin_csv, oriente=True):
     """
     graphe = defaultdict(list)
 
-    with open(chemin_csv, newline="", encoding="utf-8") as f:
-        lecteur = csv.DictReader(f)
-        for ligne in lecteur:
-            depart = ligne["depart"].strip()
-            destination = ligne["destination"].strip()
-            score = int(ligne["score_risque"])
+    lecteur = csv.DictReader(StringIO(donnees_csv))
+    for ligne in lecteur:
+        depart = ligne["depart"].strip()
+        destination = ligne["destination"].strip()
+        score = int(ligne["score_risque"])
 
-            graphe[depart].append((destination, score))
-            if not oriente:
-                graphe[destination].append((depart, score))
+        graphe[depart].append((destination, score))
+        if not oriente:
+            graphe[destination].append((depart, score))
 
     return graphe
 
@@ -92,11 +102,10 @@ def reconstruire_chemin(predecesseur, arrivee):
 
 
 def main():
-    fichier = "liaisons.csv"  # remplace par le chemin de ton fichier
     depart = "Bar Central"
     arrivee = "Domicile"
 
-    graphe = charger_graphe(fichier, oriente=True)
+    graphe = charger_graphe(LIAISONS_CSV, oriente=True)
     risque_total, chemin = chemin_moins_risque(graphe, depart, arrivee)
 
     if chemin is None:
