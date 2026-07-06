@@ -1,0 +1,7 @@
+depart,destination,score_risque
+Bar Central,Rue Victor Hugo,20
+Rue Victor Hugo,Place République,30
+Bar Central,Rue des Lilas,50
+Rue des Lilas,Place République,10
+Place République,Domicile,15
+Rue Victor Hugo,Domicile,40
